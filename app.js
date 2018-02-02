@@ -8,8 +8,38 @@ var sassMiddleware = require('node-sass-middleware');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+// sequelize
+const Sequelize = require('sequelize');
 
 var app = express();
+
+
+
+
+const sequelize = new Sequelize('test', 'admin', '1234', {
+  host: 'localhost',
+  // gimme postgres, please!
+  dialect: 'postgres',
+
+  pool: {
+    max: 5,
+    min: 0,
+    acquire: 30000,
+    idle: 10000
+  },
+
+  // SQLite only
+  storage: '/db/database.sqlite'
+});
+
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully.');
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
